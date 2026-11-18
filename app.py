@@ -1,450 +1,188 @@
 
 import streamlit as st
 import pandas as pd
-from pathlib import Path
+import plotly.express as px
+import plotly.graph_objects as go
 
 # ==========================================================
-# RAJASTHAN ROYALS - PLAYER SCOUTING INTELLIGENCE
+# SUPERR SELECTOR | RAJASTHAN ROYALS SCOUTING DASHBOARD
 # ==========================================================
 
 st.set_page_config(
-    page_title="Rajasthan Royals | Scouting Intelligence",
+    page_title="SupeRR Selector | Rajasthan Royals",
     page_icon="🏏",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ==========================================================
-# THEME
+# PLAYER SHORTLIST
+# ==========================================================
+
+players = [
+    {"Player": "Shai Hope", "Country": "West Indies", "Role": "Top-order Batter", "Category": "Batting"},
+    {"Player": "Shimron Hetmyer", "Country": "West Indies", "Role": "Middle-order Batter", "Category": "Batting"},
+    {"Player": "Amir Jangoo", "Country": "West Indies", "Role": "Wicketkeeper Batter", "Category": "Batting"},
+    {"Player": "Shahrukh Khan", "Country": "India", "Role": "Middle-order Batter / Finisher", "Category": "Batting"},
+    {"Player": "Nitish Rana", "Country": "India", "Role": "Top / Middle-order Batter", "Category": "Batting"},
+    {"Player": "Shivalik Sharma", "Country": "India", "Role": "Middle-order Batter", "Category": "Batting"},
+    {"Player": "Anmolpreet Singh", "Country": "India", "Role": "Top-order Batter", "Category": "Batting"},
+    {"Player": "Nehal Wadhera", "Country": "India", "Role": "Middle-order Batter", "Category": "Batting"},
+    {"Player": "Mitchell Owen", "Country": "Australia", "Role": "All-rounder", "Category": "All-rounder"},
+    {"Player": "Karun Nair", "Country": "India", "Role": "Top-order Batter", "Category": "Batting"},
+    {"Player": "Ben Stokes", "Country": "England", "Role": "All-rounder", "Category": "All-rounder"},
+    {"Player": "Sikandar Raza", "Country": "Zimbabwe", "Role": "All-rounder", "Category": "All-rounder"},
+    {"Player": "Michael Bracewell", "Country": "New Zealand", "Role": "All-rounder", "Category": "All-rounder"},
+    {"Player": "Shamar Springer", "Country": "West Indies", "Role": "All-rounder", "Category": "All-rounder"},
+    {"Player": "Deepak Chahar", "Country": "India", "Role": "Fast Bowler", "Category": "Bowling"},
+    {"Player": "Trent Boult", "Country": "New Zealand", "Role": "Left-arm Fast Bowler", "Category": "Bowling"},
+    {"Player": "Naman Tiwari", "Country": "India", "Role": "Left-arm Fast Bowler", "Category": "Bowling"},
+    {"Player": "Matheesha Pathirana", "Country": "Sri Lanka", "Role": "Fast Bowler", "Category": "Bowling"},
+    {"Player": "Umran Malik", "Country": "India", "Role": "Fast Bowler", "Category": "Bowling"},
+    {"Player": "Avesh Khan", "Country": "India", "Role": "Fast Bowler", "Category": "Bowling"},
+]
+
+df = pd.DataFrame(players)
+
+# ==========================================================
+# THEME AND CSS
 # ==========================================================
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 .stApp {
-    background: linear-gradient(140deg,#080d20,#111a38 60%,#26132e);
-    color: white;
-    font-family: 'Inter',sans-serif;
+    background: linear-gradient(135deg, #080d1b 0%, #10172b 55%, #171126 100%);
+    color: #f4f5fa;
+    font-family: 'Inter', sans-serif;
 }
-[data-testid="stHeader"] {
-    background: rgba(8,13,32,0.96);
-}
+
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg,#10152e,#19142d);
-    border-right: 1px solid #45304e;
+    background: #0a1020;
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
+
 [data-testid="stSidebar"] * {
-    color: white;
+    color: #f4f5fa;
 }
+
+h1, h2, h3 {
+    font-family: 'Barlow Condensed', sans-serif !important;
+    letter-spacing: 1px;
+}
+
 .hero {
-    background: linear-gradient(110deg,#e91e73,#8c1d70 48%,#151d42);
-    padding: 38px;
-    border-radius: 20px;
-    border: 1px solid #9c426f;
-    margin-bottom: 26px;
+    background: linear-gradient(115deg, #171c35, #3a1235 65%, #8c174e);
+    padding: 32px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.12);
+    margin-bottom: 24px;
 }
+
 .hero h1 {
-    font-family: 'Barlow Condensed',sans-serif;
-    font-size: 58px;
+    font-size: 48px;
     font-weight: 800;
-    letter-spacing: 2px;
-    color: white;
     margin: 0;
+    color: white;
 }
-.hero h3 {
-    font-family: 'Barlow Condensed',sans-serif;
-    color: #ffe0ed;
-    font-size: 26px;
-    margin-top: 8px;
-}
+
 .hero p {
-    color: #ffe5ef;
-    letter-spacing: 2px;
-    font-size: 12px;
+    color: #f5c6dc;
+    font-size: 15px;
+    margin-bottom: 0;
 }
-.section-title {
-    font-family: 'Barlow Condensed',sans-serif;
-    color: #ff65a5;
-    font-size: 32px;
-    font-weight: 800;
-    margin-top: 20px;
-    margin-bottom: 15px;
-}
-.metric-card, .player-card {
-    background: linear-gradient(145deg,#202b50,#111a35);
-    border: 1px solid #495477;
-    border-radius: 15px;
-    padding: 20px;
-}
+
 .metric-card {
-    min-height: 105px;
+    background: linear-gradient(145deg, #171f35, #22213b);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 112px;
 }
+
 .metric-label {
-    color: #c4cbe0;
-    font-size: 11px;
+    color: #b8bfd0;
+    font-size: 12px;
+    text-transform: uppercase;
     letter-spacing: 1.5px;
 }
+
 .metric-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: #ff4f9a;
+    margin-top: 4px;
+}
+
+.section-title {
+    color: #ff5b9e;
+    font-size: 27px;
+    font-weight: 800;
+    margin-top: 18px;
+    margin-bottom: 12px;
+}
+
+.info-card {
+    background: #151d31;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 13px;
+    padding: 18px;
+    margin-bottom: 12px;
+}
+
+.small-muted {
+    color: #aeb8ca;
+    font-size: 13px;
+}
+
+div[data-testid="stMetric"] {
+    background: #171f35;
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+div[data-testid="stMetric"] label {
+    color: #c5cbd8 !important;
+}
+
+div[data-testid="stMetricValue"] {
+    color: #ff5b9e !important;
+}
+
+.stButton button {
+    background: linear-gradient(90deg, #ed287c, #ff5b9e);
     color: white;
-    font-family: 'Barlow Condensed',sans-serif;
-    font-size: 33px;
-    font-weight: 800;
-    margin-top: 7px;
-}
-.player-name {
-    color: #ff65a5;
-    font-family: 'Barlow Condensed',sans-serif;
-    font-size: 30px;
-    font-weight: 800;
-}
-.note {
-    background: #1a2545;
-    border-left: 4px solid #ea1d76;
+    border: none;
     border-radius: 8px;
-    padding: 16px;
-    color: #f3eaf0;
-}
-div.stButton > button,
-div.stLinkButton > a {
-    background: linear-gradient(90deg,#ea1d76,#a32379);
-    color: white !important;
-    border: 1px solid #ff65a5;
-    border-radius: 9px;
     font-weight: 700;
 }
-.stSelectbox label {
-    color: #ff80b2 !important;
-    font-weight: 600;
+
+.stButton button:hover {
+    border: 1px solid white;
+    color: white;
 }
-[data-testid="stMetricValue"] {
-    color: #ff65a5;
+
+[data-testid="stDataFrame"] {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
 }
-a {
-    color: #ff80b2 !important;
+
+hr {
+    border-color: rgba(255,255,255,0.12);
 }
 </style>
 """, unsafe_allow_html=True)
 
-
 # ==========================================================
-# UPDATED 20-PLAYER SHORTLIST
-# ==========================================================
-
-players = [
-    ("Shai Hope", "West Indies", "Top-order Batter", "Batting"),
-    ("Shimron Hetmyer", "West Indies", "Middle-order Batter", "Batting"),
-    ("Amir Jangoo", "West Indies", "Wicketkeeper Batter", "Batting"),
-    ("Shahrukh Khan", "India", "Middle-order Batter / Finisher", "Batting"),
-    ("Nitish Rana", "India", "Top / Middle-order Batter", "Batting"),
-    ("Shivalik Sharma", "India", "Middle-order Batter", "Batting"),
-    ("Anmolpreet Singh", "India", "Top-order Batter", "Batting"),
-    ("Nehal Wadhera", "India", "Middle-order Batter", "Batting"),
-    ("Mitchell Owen", "Australia", "All-rounder", "All-rounder"),
-    ("Karun Nair", "India", "Top-order Batter", "Batting"),
-    ("Ben Stokes", "England", "All-rounder", "All-rounder"),
-    ("Sikandar Raza", "Zimbabwe", "All-rounder", "All-rounder"),
-    ("Michael Bracewell", "New Zealand", "All-rounder", "All-rounder"),
-    ("Shamar Springer", "West Indies", "All-rounder", "All-rounder"),
-    ("Deepak Chahar", "India", "Fast Bowler", "Bowling"),
-    ("Trent Boult", "New Zealand", "Left-arm Fast Bowler", "Bowling"),
-    ("Naman Tiwari", "India", "Left-arm Fast Bowler", "Bowling"),
-    ("Matheesha Pathirana", "Sri Lanka", "Fast Bowler", "Bowling"),
-    ("Umran Malik", "India", "Fast Bowler", "Bowling"),
-    ("Avesh Khan", "India", "Fast Bowler", "Bowling")
-]
-
-player_df = pd.DataFrame(
-    players,
-    columns=["Player", "Country", "Role", "Category"]
-)
-
-
-# ==========================================================
-# PLAYER PROFILE INFORMATION
+# SIDEBAR NAVIGATION
 # ==========================================================
 
-research = {
-    "Shai Hope": {
-        "URL": "https://www.cricbuzz.com/profiles/10384/shai-hope",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Not listed",
-        "Profile": "Wicketkeeper-batter",
-        "Focus": "Top-order stability and innings construction"
-    },
-    "Shimron Hetmyer": {
-        "URL": "https://www.cricbuzz.com/profiles/9789/hetmyer",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Not listed",
-        "Profile": "Middle-order batter",
-        "Focus": "Middle-order batting and boundary scoring"
-    },
-    "Amir Jangoo": {
-        "URL": "https://www.cricbuzz.com/profiles/12674/amir-jangoo",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Not listed",
-        "Profile": "Wicketkeeper-batter",
-        "Focus": "Wicketkeeping and top-order batting"
-    },
-    "Shahrukh Khan": {
-        "URL": "https://www.cricbuzz.com/profiles/10226/shahrukh-khan-c",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Middle-order batter / Finisher",
-        "Focus": "Power hitting and finishing in the death overs"
-    },
-    "Nitish Rana": {
-        "URL": "https://www.cricbuzz.com/profiles/9204/nitish-rana-c",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Top / Middle-order batter",
-        "Focus": "Middle-order stability, attacking batting and off-spin"
-    },
-    "Shivalik Sharma": {
-        "URL": "https://www.cricbuzz.com/profiles/14408/shivalik-sharma",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm legbreak",
-        "Profile": "Batting all-rounder",
-        "Focus": "Batting and leg-spin contribution"
-    },
-    "Anmolpreet Singh": {
-        "URL": "https://www.cricbuzz.com/profiles/10947/anmolpreet-singh",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Batter",
-        "Focus": "Top-order batting and innings construction"
-    },
-    "Nehal Wadhera": {
-        "URL": "https://www.cricbuzz.com/profiles/13915/nehal-wadhera-c",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm legbreak",
-        "Profile": "Middle-order batter",
-        "Focus": "Middle-order batting and spin-hitting"
-    },
-    "Mitchell Owen": {
-        "URL": "https://www.cricbuzz.com/profiles/18568/mitchell-owen",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm medium",
-        "Profile": "Batting all-rounder",
-        "Focus": "Power hitting and medium-pace bowling"
-    },
-    "Karun Nair": {
-        "URL": "https://www.cricbuzz.com/profiles/8257/karun-nair",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Top-order batter",
-        "Focus": "Top-order stability, experience and innings construction"
-    },
-    "Ben Stokes": {
-        "URL": "https://www.cricbuzz.com/profiles/6557/ben-stokes",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm fast-medium",
-        "Profile": "Batting all-rounder",
-        "Focus": "Pressure batting and seam-bowling contribution"
-    },
-    "Sikandar Raza": {
-        "URL": "https://www.cricbuzz.com/profiles/9354/s-raza",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Batting all-rounder",
-        "Focus": "Batting and off-spin contribution"
-    },
-    "Michael Bracewell": {
-        "URL": "https://www.cricbuzz.com/profiles/9551/m-bracewell",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm offbreak",
-        "Profile": "Batting all-rounder",
-        "Focus": "Batting and off-spin contribution"
-    },
-    "Shamar Springer": {
-        "URL": "https://www.cricbuzz.com/profiles/11223/shamar-springer",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm fast-medium",
-        "Profile": "Bowling all-rounder",
-        "Focus": "Seam bowling and lower-order batting"
-    },
-    "Deepak Chahar": {
-        "URL": "https://www.cricbuzz.com/profiles/7836/deepak-chahar",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm fast-medium",
-        "Profile": "Fast bowler",
-        "Focus": "New-ball movement and powerplay wickets"
-    },
-    "Trent Boult": {
-        "URL": "https://www.cricbuzz.com/profiles/8117/trent-boult",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Left-arm fast-medium",
-        "Profile": "Fast bowler",
-        "Focus": "Left-arm pace and new-ball movement"
-    },
-    "Naman Tiwari": {
-        "URL": "https://www.cricbuzz.com/profiles/51756/naman-tiwari",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Left-arm fast-medium",
-        "Profile": "Fast bowler",
-        "Focus": "Left-arm pace and wicket-taking ability"
-    },
-    "Matheesha Pathirana": {
-        "URL": "https://www.cricbuzz.com/profiles/16458/pathirana",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm fast",
-        "Profile": "Fast bowler",
-        "Focus": "Death-over bowling, yorkers and wicket-taking variations"
-    },
-    "Umran Malik": {
-        "URL": "https://www.cricbuzz.com/profiles/19027/umran-malik",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm fast",
-        "Profile": "Fast bowler",
-        "Focus": "Express pace and wicket-taking potential"
-    },
-    "Avesh Khan": {
-        "URL": "https://www.cricbuzz.com/profiles/9781/avesh-khan",
-        "Batting Style": "Right-handed",
-        "Bowling Style": "Right-arm fast-medium",
-        "Profile": "Fast bowler",
-        "Focus": "Pace variations, middle overs and death-over bowling"
-    }
-}
-
-
-# ==========================================================
-# DATASET DETECTION
-# ==========================================================
-
-def find_dataset_files():
-    base = Path(__file__).resolve().parent
-
-    ignored = {
-        ".git", ".venv", "venv",
-        "__pycache__", "node_modules"
-    }
-
-    return [
-        file for file in base.rglob("*.csv")
-        if not any(part in ignored for part in file.parts)
-    ]
-
-
-dataset_files = find_dataset_files()
-
-dataset_categories = {
-    "Ball-by-ball data": ["ball", "delivery"],
-    "Match data": ["match"],
-    "Competition data": ["competition", "tournament"],
-    "Team data": ["team"],
-    "Playing XI data": ["playing", "xi", "squad"]
-}
-
-detected_categories = {}
-
-for category, keywords in dataset_categories.items():
-    detected_categories[category] = [
-        file.name for file in dataset_files
-        if any(word in file.stem.lower() for word in keywords)
-    ]
-
-
-# ==========================================================
-# EVALUATION PARAMETERS
-# ==========================================================
-
-batting_parameters = pd.DataFrame({
-    "Evaluation Parameter": [
-        "Batting Average", "Strike Rate", "Boundary Percentage",
-        "Pressure Runs", "Pressure Strike Rate",
-        "Dismissal Frequency", "Chase Performance",
-        "Consistency", "Sample Size"
-    ],
-    "What It Measures": [
-        "Average runs scored per dismissal.",
-        "Runs scored per 100 balls faced.",
-        "Share of runs scored through boundaries.",
-        "Runs contributed in pressure situations.",
-        "Scoring speed in high-pressure situations.",
-        "How frequently the batter gets dismissed.",
-        "Contribution while chasing a target.",
-        "Performance across different innings.",
-        "Number of innings and balls analysed."
-    ],
-    "Scouting Importance": [
-        "Measures run-scoring contribution.",
-        "Evaluates scoring tempo.",
-        "Identifies boundary-scoring ability.",
-        "Examines contribution in difficult situations.",
-        "Evaluates scoring under pressure.",
-        "Helps assess batting reliability.",
-        "Examines chase-related performance.",
-        "Distinguishes consistent performance.",
-        "Avoids misleading conclusions."
-    ]
-})
-
-bowling_parameters = pd.DataFrame({
-    "Evaluation Parameter": [
-        "Bowling Average", "Economy Rate", "Bowling Strike Rate",
-        "Dot-Ball Percentage", "Death-Over Economy",
-        "Powerplay Economy", "Pressure Wickets",
-        "Boundary Control", "Sample Size"
-    ],
-    "What It Measures": [
-        "Runs conceded per wicket taken.",
-        "Runs conceded per over.",
-        "Balls bowled per wicket.",
-        "Percentage of dot balls.",
-        "Run control in final overs.",
-        "Run control in opening overs.",
-        "Wickets taken in pressure situations.",
-        "Ability to limit boundaries.",
-        "Number of overs and deliveries."
-    ],
-    "Scouting Importance": [
-        "Evaluates wicket-taking efficiency.",
-        "Measures scoring control.",
-        "Shows wicket frequency.",
-        "Evaluates ability to build pressure.",
-        "Examines death-over effectiveness.",
-        "Examines powerplay effectiveness.",
-        "Evaluates impact in difficult moments.",
-        "Measures boundary prevention.",
-        "Provides statistical context."
-    ]
-})
-
-general_parameters = pd.DataFrame({
-    "Parameter": [
-        "Role Suitability", "Fielding Contribution",
-        "Fitness and Availability", "Experience",
-        "Opposition Quality", "Match Conditions", "Team Balance"
-    ],
-    "Evaluation Purpose": [
-        "Fit with the required squad position.",
-        "Catches, run-outs and fielding reliability.",
-        "Availability throughout the season.",
-        "Experience in competitive T20 cricket.",
-        "Performance against different opposition.",
-        "Suitability to different pitches.",
-        "Contribution to the overall combination."
-    ]
-})
-
-
-# ==========================================================
-# SIDEBAR
-# ==========================================================
-
-st.sidebar.markdown("""
-<div style="text-align:center;padding:12px 0;">
-    <div style="font-size:34px;">🏏</div>
-    <div style="color:#ff65a5;font-weight:800;letter-spacing:3px;">
-        RAJASTHAN ROYALS
-    </div>
-    <div style="color:#d8b66a;font-size:10px;letter-spacing:2px;">
-        SCOUTING INTELLIGENCE
-    </div>
-</div>
-<hr>
-""", unsafe_allow_html=True)
+st.sidebar.markdown("## 🏏 SUPERR SELECTOR")
+st.sidebar.caption("RAJASTHAN ROYALS | SCOUTING INTELLIGENCE")
+st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "NAVIGATION",
@@ -458,22 +196,30 @@ page = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("ROUND 1 | PLAYER RELIABILITY")
-st.sidebar.caption("Scouting Dashboard | 2026")
-
+st.sidebar.markdown("### SCOUTING SHORTLIST")
+st.sidebar.metric("Players shortlisted", len(df))
+st.sidebar.caption("Scouting analysis dashboard")
 
 # ==========================================================
-# HERO
+# REUSABLE COMPONENTS
 # ==========================================================
 
-st.markdown("""
-<div class="hero">
-    <p>RAJASTHAN ROYALS • SCOUTING INTELLIGENCE</p>
-    <h1>ROYAL SCOUTING</h1>
-    <h3>PLAYER RELIABILITY UNDER PRESSURE</h3>
-    <p>DATA-DRIVEN TALENT IDENTIFICATION • ROUND 1</p>
-</div>
-""", unsafe_allow_html=True)
+def hero(title, subtitle):
+    st.markdown(f"""
+    <div class="hero">
+        <h1>{title}</h1>
+        <p>{subtitle}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def metric_card(label, value):
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-label">{label}</div>
+        <div class="metric-value">{value}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ==========================================================
@@ -482,106 +228,96 @@ st.markdown("""
 
 if page == "Overview":
 
-    st.markdown(
-        '<div class="section-title">SCOUTING OVERVIEW</div>',
-        unsafe_allow_html=True
+    hero(
+        "SUPERR SELECTOR",
+        "A data-informed player scouting dashboard for Rajasthan Royals"
     )
+
+    st.markdown('<div class="section-title">SCOUTING OVERVIEW</div>',
+                unsafe_allow_html=True)
+
+    batting_count = len(df[df["Category"] == "Batting"])
+    bowling_count = len(df[df["Category"] == "Bowling"])
+    allrounder_count = len(df[df["Category"] == "All-rounder"])
 
     c1, c2, c3, c4 = st.columns(4)
 
-    metrics = [
-        ("SHORTLISTED PLAYERS", len(player_df)),
-        ("BATTERS", len(player_df[player_df["Category"] == "Batting"])),
-        ("ALL-ROUNDERS", len(player_df[player_df["Category"] == "All-rounder"])),
-        ("BOWLERS", len(player_df[player_df["Category"] == "Bowling"]))
-    ]
+    with c1:
+        metric_card("TOTAL SHORTLIST", len(df))
+    with c2:
+        metric_card("BATTERS", batting_count)
+    with c3:
+        metric_card("ALL-ROUNDERS", allrounder_count)
+    with c4:
+        metric_card("BOWLERS", bowling_count)
 
-    for col, (label, value) in zip([c1, c2, c3, c4], metrics):
-        with col:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-label">{label}</div>
-                <div class="metric-value">{value}</div>
-            </div>
-            """, unsafe_allow_html=True)
+    st.markdown("---")
 
-    st.markdown("### 🎯 PROJECT OBJECTIVE")
-    st.write(
-        "Identify players who can perform reliably under high-pressure "
-        "match situations. The scouting framework focuses on batting "
-        "consistency, death-over bowling, pressure handling and role suitability."
-    )
+    left, right = st.columns([1.1, 0.9])
 
-    st.markdown("### 🏏 SCOUTING FRAMEWORK")
+    with left:
+        st.markdown('<div class="section-title">PLAYER DISTRIBUTION</div>',
+                    unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+        category_data = (
+            df["Category"].value_counts()
+            .rename_axis("Category")
+            .reset_index(name="Players")
+        )
 
-    with col1:
+        fig = px.pie(
+            category_data,
+            names="Category",
+            values="Players",
+            hole=0.58,
+            title="Shortlist by player category"
+        )
+
+        fig.update_layout(
+            template="plotly_dark",
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            font_color="white",
+            legend_title_text=""
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    with right:
+        st.markdown('<div class="section-title">SCOUTING FOCUS</div>',
+                    unsafe_allow_html=True)
+
         st.markdown("""
-        <div class="player-card">
-            <div class="player-name">BATTER EVALUATION</div>
-            <p>• Runs scored under pressure</p>
-            <p>• Strike rate under pressure</p>
-            <p>• Dismissal frequency</p>
-            <p>• Chase performance</p>
-            <p>• Comparison with normal performance</p>
+        <div class="info-card">
+            <h3>🏏 Batting depth</h3>
+            <p class="small-muted">
+            Assess top-order stability, middle-order flexibility,
+            finishing ability and wicketkeeping options.
+            </p>
+        </div>
+        <div class="info-card">
+            <h3>⚡ All-round capabilities</h3>
+            <p class="small-muted">
+            Evaluate players who can contribute with both bat
+            and ball and provide team balance.
+            </p>
+        </div>
+        <div class="info-card">
+            <h3>🎯 Bowling resources</h3>
+            <p class="small-muted">
+            Examine pace options, left-arm variation,
+            death-over execution and powerplay skills.
+            </p>
         </div>
         """, unsafe_allow_html=True)
 
-    with col2:
-        st.markdown("""
-        <div class="player-card">
-            <div class="player-name">BOWLER EVALUATION</div>
-            <p>• Economy under pressure</p>
-            <p>• Wickets taken</p>
-            <p>• Dot-ball percentage</p>
-            <p>• Death-over performance</p>
-            <p>• Comparison with normal performance</p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown('<div class="section-title">CURRENT SHORTLIST</div>',
+                unsafe_allow_html=True)
 
-    st.markdown("### ADDITIONAL EVALUATION")
     st.dataframe(
-        general_parameters,
+        df,
         use_container_width=True,
         hide_index=True
     )
-
-    st.markdown("### 📁 DATASET AVAILABILITY")
-
-    if dataset_files:
-        st.success(f"{len(dataset_files)} CSV file(s) detected.")
-    else:
-        st.warning("No CSV files detected. Check your uploaded dataset.")
-
-    st.caption(
-        "File detection confirms file availability only. "
-        "It does not confirm that statistical calculations have been completed."
-    )
-
-    with st.expander("VIEW DATASET FILES"):
-        if dataset_files:
-            base = Path(__file__).resolve().parent
-            for file in dataset_files:
-                st.write("📄", str(file.relative_to(base)))
-        else:
-            st.write("No CSV files detected.")
-
-    st.markdown("### DATASET CATEGORY CHECK")
-
-    for category, files in detected_categories.items():
-        if files:
-            st.success(f"{category}: Found — {', '.join(files)}")
-        else:
-            st.info(f"{category}: Not detected by filename")
-
-    st.markdown("### PLAYER SHORTLIST")
-    st.dataframe(
-        player_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
 
 # ==========================================================
 # BATTING ANALYTICS
@@ -589,52 +325,61 @@ if page == "Overview":
 
 elif page == "Batting Analytics":
 
-    st.markdown(
-        '<div class="section-title">BATTING INTELLIGENCE</div>',
-        unsafe_allow_html=True
+    hero(
+        "BATTING ANALYTICS",
+        "Evaluating batting roles, consistency and match impact"
     )
 
-    batters = player_df[
-        player_df["Category"] == "Batting"
-    ]
+    batters = df[df["Category"] == "Batting"].copy()
 
-    st.write(
-        "Explore the shortlisted batting candidates and the parameters "
-        "used to assess their T20 batting contribution."
-    )
+    st.markdown('<div class="section-title">BATTING SHORTLIST</div>',
+                unsafe_allow_html=True)
+
+    st.metric("Players in batting category", len(batters))
 
     st.dataframe(
-        batters,
+        batters[["Player", "Country", "Role"]],
         use_container_width=True,
         hide_index=True
     )
 
-    st.markdown("### BATTER EVALUATION PARAMETERS")
+    st.markdown("---")
+    st.markdown('<div class="section-title">BATTING EVALUATION FRAMEWORK</div>',
+                unsafe_allow_html=True)
+
+    batting_parameters = pd.DataFrame({
+        "Parameter": [
+            "Batting Average",
+            "Strike Rate",
+            "Boundary Percentage",
+            "Dot Ball Percentage",
+            "Powerplay Performance",
+            "Middle-over Performance",
+            "Death-over Performance",
+            "Performance Under Pressure"
+        ],
+        "Scouting Purpose": [
+            "Measures scoring consistency",
+            "Measures scoring speed",
+            "Evaluates boundary-scoring ability",
+            "Identifies scoring pressure",
+            "Evaluates powerplay contribution",
+            "Measures middle-over stability",
+            "Assesses finishing contribution",
+            "Evaluates performance in difficult situations"
+        ]
+    })
+
     st.dataframe(
         batting_parameters,
         use_container_width=True,
         hide_index=True
     )
 
-    st.markdown("### HOW TO INTERPRET THE PARAMETERS")
-
-    st.markdown("""
-    <div class="note">
-    <b>Batting Average:</b> Helps assess the batter's run contribution
-    before dismissal.<br><br>
-    <b>Strike Rate:</b> Helps understand how quickly the batter scores.<br><br>
-    <b>Pressure Strike Rate:</b> Examines scoring tempo in difficult
-    match situations.<br><br>
-    <b>Sample Size:</b> Prevents conclusions based on a very small
-    number of innings or deliveries.
-    </div>
-    """, unsafe_allow_html=True)
-
     st.info(
-        "These are evaluation definitions. Actual player statistics "
-        "are not calculated by this version of the dashboard."
+        "These are the evaluation parameters used in the scouting framework. "
+        "Actual player-level batting statistics are not calculated in this version."
     )
-
 
 # ==========================================================
 # BOWLING ANALYTICS
@@ -642,50 +387,63 @@ elif page == "Batting Analytics":
 
 elif page == "Bowling Analytics":
 
-    st.markdown(
-        '<div class="section-title">BOWLING INTELLIGENCE</div>',
-        unsafe_allow_html=True
+    hero(
+        "BOWLING ANALYTICS",
+        "Evaluating pace resources, wicket-taking ability and control"
     )
 
-    bowlers = player_df[
-        player_df["Category"] == "Bowling"
-    ]
+    bowlers = df[df["Category"] == "Bowling"].copy()
 
-    st.write(
-        "Explore the shortlisted bowling candidates and the parameters "
-        "used to evaluate their T20 bowling contribution."
-    )
+    st.markdown('<div class="section-title">BOWLING SHORTLIST</div>',
+                unsafe_allow_html=True)
+
+    st.metric("Players in bowling category", len(bowlers))
 
     st.dataframe(
-        bowlers,
+        bowlers[["Player", "Country", "Role"]],
         use_container_width=True,
         hide_index=True
     )
 
-    st.markdown("### BOWLER EVALUATION PARAMETERS")
+    st.markdown("---")
+    st.markdown('<div class="section-title">BOWLING EVALUATION FRAMEWORK</div>',
+                unsafe_allow_html=True)
+
+    bowling_parameters = pd.DataFrame({
+        "Parameter": [
+            "Bowling Average",
+            "Economy Rate",
+            "Strike Rate",
+            "Dot Ball Percentage",
+            "Powerplay Economy",
+            "Middle-over Control",
+            "Death-over Economy",
+            "Wicket-taking Ability",
+            "Variation and Execution"
+        ],
+        "Scouting Purpose": [
+            "Measures runs conceded per wicket",
+            "Evaluates run-control ability",
+            "Measures frequency of wickets",
+            "Identifies pressure-building ability",
+            "Evaluates early-over effectiveness",
+            "Assesses control during middle overs",
+            "Measures performance at the death",
+            "Evaluates wicket-taking threat",
+            "Assesses tactical bowling options"
+        ]
+    })
+
     st.dataframe(
         bowling_parameters,
         use_container_width=True,
         hide_index=True
     )
 
-    st.markdown("### HOW TO INTERPRET THE PARAMETERS")
-
-    st.markdown("""
-    <div class="note">
-    <b>Economy Rate:</b> Measures the bowler's ability to restrict runs.<br><br>
-    <b>Bowling Strike Rate:</b> Measures how frequently the bowler takes wickets.<br><br>
-    <b>Dot-Ball Percentage:</b> Examines the ability to build pressure.<br><br>
-    <b>Death-Over Economy:</b> Helps assess effectiveness during the final overs.<br><br>
-    <b>Sample Size:</b> Provides context to the bowling statistics.
-    </div>
-    """, unsafe_allow_html=True)
-
     st.info(
-        "These are evaluation definitions. Actual bowling statistics "
-        "are not calculated by this version of the dashboard."
+        "These are the evaluation parameters used in the scouting framework. "
+        "Actual player-level bowling statistics are not calculated in this version."
     )
-
 
 # ==========================================================
 # PLAYER PROFILES
@@ -693,91 +451,71 @@ elif page == "Bowling Analytics":
 
 elif page == "Player Profiles":
 
-    st.markdown(
-        '<div class="section-title">PLAYER SCOUTING PROFILES</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        "Select a shortlisted player to view their profile information "
-        "and open their individual Cricbuzz profile."
+    hero(
+        "PLAYER PROFILES",
+        "Explore the shortlisted players and their cricketing roles"
     )
 
     selected_player = st.selectbox(
-        "SELECT A PLAYER",
-        player_df["Player"].tolist(),
-        key="profile_player"
+        "Select a player",
+        df["Player"].tolist()
     )
 
-    player = player_df[
-        player_df["Player"] == selected_player
-    ].iloc[0]
-
-    details = research[selected_player]
+    player = df[df["Player"] == selected_player].iloc[0]
 
     st.markdown("---")
+    st.markdown('<div class="section-title">PLAYER INFORMATION</div>',
+                unsafe_allow_html=True)
 
-    st.markdown(
-        f'<div class="player-name">{selected_player}</div>',
-        unsafe_allow_html=True
-    )
+    c1, c2 = st.columns([1, 2])
 
+    with c1:
+        st.markdown("""
+        <div class="info-card" style="text-align:center;">
+            <div style="font-size:70px;">🏏</div>
+            <h2 style="color:#ff5b9e;">PLAYER PROFILE</h2>
+            <p class="small-muted">Rajasthan Royals Scouting</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown(f"## {player['Player']}")
+        st.write(f"**Country:** {player['Country']}")
+        st.write(f"**Playing Role:** {player['Role']}")
+        st.write(f"**Scouting Category:** {player['Category']}")
+
+        st.markdown("---")
+        st.markdown("### Scouting considerations")
+
+        if player["Category"] == "Batting":
+            st.write(
+                "- Batting consistency and scoring options\n"
+                "- Ability to adapt to different match situations\n"
+                "- Strike rotation and boundary potential\n"
+                "- Role flexibility within the batting order"
+            )
+
+        elif player["Category"] == "Bowling":
+            st.write(
+                "- Wicket-taking ability\n"
+                "- Economy and control\n"
+                "- Powerplay and death-over suitability\n"
+                "- Bowling variations and execution"
+            )
+
+        else:
+            st.write(
+                "- Contribution with both bat and ball\n"
+                "- Team balance and role flexibility\n"
+                "- Match-up suitability\n"
+                "- Ability to influence different phases"
+            )
+
+    st.markdown("---")
     st.caption(
-        f"{player['Country']} | {player['Category']}"
+        "Profile information is based on the current scouting shortlist. "
+        "Detailed verified player statistics and career records are not included here."
     )
-
-    st.markdown("### PLAYER INFORMATION")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("**COUNTRY**")
-        st.write(player["Country"])
-
-        st.markdown("**SQUAD ROLE**")
-        st.write(player["Role"])
-
-        st.markdown("**CATEGORY**")
-        st.write(player["Category"])
-
-    with col2:
-        st.markdown("**BATTING STYLE**")
-        st.write(details["Batting Style"])
-
-        st.markdown("**BOWLING STYLE**")
-        st.write(details["Bowling Style"])
-
-        st.markdown("**PLAYING PROFILE**")
-        st.write(details["Profile"])
-
-    st.markdown("### SCOUTING FOCUS")
-    st.info(details["Focus"])
-
-    st.markdown("### PLAYER RESEARCH")
-
-    st.link_button(
-        "📖 OPEN CRICBUZZ PLAYER PROFILE",
-        details["URL"],
-        use_container_width=True
-    )
-
-    st.caption(
-        "Opens the player's individual Cricbuzz profile for further "
-        "career and statistics research."
-    )
-
-    st.markdown("### SCOUTING EVALUATION")
-
-    st.write(
-        "The player's suitability should be assessed using the relevant "
-        "batting, bowling, fielding and role-specific evaluation parameters."
-    )
-
-    st.warning(
-        "Career statistics and pressure metrics should be verified "
-        "against the competition dataset before drawing conclusions."
-    )
-
 
 # ==========================================================
 # PLAYER COMPARISON
@@ -785,153 +523,104 @@ elif page == "Player Profiles":
 
 elif page == "Player Comparison":
 
-    st.markdown(
-        '<div class="section-title">PLAYER INTELLIGENCE & COMPARISON</div>',
-        unsafe_allow_html=True
+    hero(
+        "PLAYER COMPARISON",
+        "Compare shortlisted players by role, country and scouting category"
     )
 
     col1, col2 = st.columns(2)
 
     with col1:
-        player1 = st.selectbox(
-            "SELECT FIRST PLAYER",
-            player_df["Player"].tolist(),
-            key="p1"
+        player_one = st.selectbox(
+            "Select first player",
+            df["Player"].tolist(),
+            key="player_one"
         )
 
     with col2:
-        player2 = st.selectbox(
-            "SELECT SECOND PLAYER",
-            player_df["Player"].tolist(),
+        player_two = st.selectbox(
+            "Select second player",
+            df["Player"].tolist(),
             index=1,
-            key="p2"
+            key="player_two"
         )
 
-    if player1 == player2:
-        st.warning("Please select two different players.")
+    first = df[df["Player"] == player_one].iloc[0]
+    second = df[df["Player"] == player_two].iloc[0]
 
+    st.markdown("---")
+    st.markdown('<div class="section-title">HEAD-TO-HEAD COMPARISON</div>',
+                unsafe_allow_html=True)
+
+    c1, c2 = st.columns(2)
+
+    with c1:
+        st.markdown(f"### 🏏 {first['Player']}")
+        st.markdown(f"""
+        <div class="info-card">
+            <p><b>Country:</b> {first['Country']}</p>
+            <p><b>Role:</b> {first['Role']}</p>
+            <p><b>Category:</b> {first['Category']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with c2:
+        st.markdown(f"### 🏏 {second['Player']}")
+        st.markdown(f"""
+        <div class="info-card">
+            <p><b>Country:</b> {second['Country']}</p>
+            <p><b>Role:</b> {second['Role']}</p>
+            <p><b>Category:</b> {second['Category']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    comparison = pd.DataFrame({
+        "Comparison": ["Country", "Playing Role", "Category"],
+        player_one: [
+            first["Country"],
+            first["Role"],
+            first["Category"]
+        ],
+        player_two: [
+            second["Country"],
+            second["Role"],
+            second["Category"]
+        ]
+    })
+
+    st.dataframe(
+        comparison,
+        use_container_width=True,
+        hide_index=True
+    )
+
+    if player_one == player_two:
+        st.warning("You have selected the same player twice.")
+    elif first["Category"] == second["Category"]:
+        st.success(
+            "Both players belong to the same scouting category. "
+            "Compare their specific roles and suitability for the team."
+        )
     else:
-        p1 = player_df[
-            player_df["Player"] == player1
-        ].iloc[0]
-
-        p2 = player_df[
-            player_df["Player"] == player2
-        ].iloc[0]
-
-        r1 = research[player1]
-        r2 = research[player2]
-
-        st.markdown("### HEAD-TO-HEAD PLAYER PROFILE")
-
-        comparison = pd.DataFrame({
-            "Attribute": [
-                "Country", "Squad Role", "Category",
-                "Batting Style", "Bowling Style",
-                "Playing Profile", "Scouting Focus"
-            ],
-            player1: [
-                p1["Country"], p1["Role"], p1["Category"],
-                r1["Batting Style"], r1["Bowling Style"],
-                r1["Profile"], r1["Focus"]
-            ],
-            player2: [
-                p2["Country"], p2["Role"], p2["Category"],
-                r2["Batting Style"], r2["Bowling Style"],
-                r2["Profile"], r2["Focus"]
-            ]
-        })
-
-        st.dataframe(
-            comparison,
-            use_container_width=True,
-            hide_index=True
-        )
-
-        st.markdown("### PLAYER RESEARCH")
-
-        c1, c2 = st.columns(2)
-
-        with c1:
-            st.markdown(
-                f'<div class="player-name">{player1}</div>',
-                unsafe_allow_html=True
-            )
-            st.write("Country:", p1["Country"])
-            st.write("Role:", p1["Role"])
-            st.write("Playing Profile:", r1["Profile"])
-            st.write("Scouting Focus:", r1["Focus"])
-
-            st.link_button(
-                f"OPEN {player1.upper()} CRICBUZZ PROFILE",
-                r1["URL"],
-                use_container_width=True
-            )
-
-        with c2:
-            st.markdown(
-                f'<div class="player-name">{player2}</div>',
-                unsafe_allow_html=True
-            )
-            st.write("Country:", p2["Country"])
-            st.write("Role:", p2["Role"])
-            st.write("Playing Profile:", r2["Profile"])
-            st.write("Scouting Focus:", r2["Focus"])
-
-            st.link_button(
-                f"OPEN {player2.upper()} CRICBUZZ PROFILE",
-                r2["URL"],
-                use_container_width=True
-            )
-
-        st.markdown("### COMPARISON EVALUATION PARAMETERS")
-
-        tab1, tab2, tab3 = st.tabs([
-            "Batting", "Bowling", "Overall Fit"
-        ])
-
-        with tab1:
-            st.dataframe(
-                batting_parameters,
-                use_container_width=True,
-                hide_index=True
-            )
-
-        with tab2:
-            st.dataframe(
-                bowling_parameters,
-                use_container_width=True,
-                hide_index=True
-            )
-
-        with tab3:
-            st.dataframe(
-                general_parameters,
-                use_container_width=True,
-                hide_index=True
-            )
-
         st.info(
-            "This comparison supports scouting discussions. "
-            "It does not rank players or declare a winner. "
-            "Verified career statistics and match-situation data "
-            "are required for statistical conclusions."
+            "These players belong to different scouting categories "
+            "and may serve different team requirements."
         )
-
 
 # ==========================================================
 # FOOTER
 # ==========================================================
 
 st.markdown("---")
-
-st.markdown("""
-<div style="text-align:center;padding:15px;color:#c4cbe0;">
-    <div style="color:#ff65a5;font-weight:800;letter-spacing:2px;">
-        RAJASTHAN ROYALS SCOUTING
+st.markdown(
+    """
+    <div style="text-align:center; padding:12px; color:#9ba6bb;">
+        <b style="color:#ff5b9e;">SUPERR SELECTOR</b><br>
+        Rajasthan Royals | Player Scouting Intelligence<br>
+        <span style="font-size:11px;">
+        Independent scouting dashboard
+        </span>
     </div>
-    PLAYER RELIABILITY UNDER PRESSURE
-    <br>
-    <span style="color:#d8b66a;">ROUND 1 | 2026</span>
-</div>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
