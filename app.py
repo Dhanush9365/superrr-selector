@@ -27,20 +27,16 @@ st.markdown("""
     color: white;
     font-family: 'Inter',sans-serif;
 }
-
 [data-testid="stHeader"] {
     background: rgba(8,13,32,0.96);
 }
-
 [data-testid="stSidebar"] {
     background: linear-gradient(180deg,#10152e,#19142d);
     border-right: 1px solid #45304e;
 }
-
 [data-testid="stSidebar"] * {
     color: white;
 }
-
 .hero {
     background: linear-gradient(110deg,#e91e73,#8c1d70 48%,#151d42);
     padding: 38px;
@@ -48,7 +44,6 @@ st.markdown("""
     border: 1px solid #9c426f;
     margin-bottom: 26px;
 }
-
 .hero h1 {
     font-family: 'Barlow Condensed',sans-serif;
     font-size: 58px;
@@ -57,20 +52,17 @@ st.markdown("""
     color: white;
     margin: 0;
 }
-
 .hero h3 {
     font-family: 'Barlow Condensed',sans-serif;
     color: #ffe0ed;
     font-size: 26px;
     margin-top: 8px;
 }
-
 .hero p {
     color: #ffe5ef;
     letter-spacing: 2px;
     font-size: 12px;
 }
-
 .section-title {
     font-family: 'Barlow Condensed',sans-serif;
     color: #ff65a5;
@@ -79,21 +71,20 @@ st.markdown("""
     margin-top: 20px;
     margin-bottom: 15px;
 }
-
-.metric-card {
+.metric-card, .player-card {
     background: linear-gradient(145deg,#202b50,#111a35);
     border: 1px solid #495477;
     border-radius: 15px;
     padding: 20px;
+}
+.metric-card {
     min-height: 105px;
 }
-
 .metric-label {
     color: #c4cbe0;
     font-size: 11px;
     letter-spacing: 1.5px;
 }
-
 .metric-value {
     color: white;
     font-family: 'Barlow Condensed',sans-serif;
@@ -101,21 +92,12 @@ st.markdown("""
     font-weight: 800;
     margin-top: 7px;
 }
-
-.player-card {
-    background: linear-gradient(145deg,#202b50,#111a35);
-    border: 1px solid #495477;
-    border-radius: 15px;
-    padding: 22px;
-}
-
 .player-name {
     color: #ff65a5;
     font-family: 'Barlow Condensed',sans-serif;
     font-size: 30px;
     font-weight: 800;
 }
-
 .note {
     background: #1a2545;
     border-left: 4px solid #ea1d76;
@@ -123,7 +105,6 @@ st.markdown("""
     padding: 16px;
     color: #f3eaf0;
 }
-
 div.stButton > button,
 div.stLinkButton > a {
     background: linear-gradient(90deg,#ea1d76,#a32379);
@@ -132,16 +113,13 @@ div.stLinkButton > a {
     border-radius: 9px;
     font-weight: 700;
 }
-
 .stSelectbox label {
     color: #ff80b2 !important;
     font-weight: 600;
 }
-
 [data-testid="stMetricValue"] {
     color: #ff65a5;
 }
-
 a {
     color: #ff80b2 !important;
 }
@@ -150,20 +128,20 @@ a {
 
 
 # ==========================================================
-# PLAYER SHORTLIST
+# UPDATED 20-PLAYER SHORTLIST
 # ==========================================================
 
 players = [
     ("Shai Hope", "West Indies", "Top-order Batter", "Batting"),
     ("Shimron Hetmyer", "West Indies", "Middle-order Batter", "Batting"),
     ("Amir Jangoo", "West Indies", "Wicketkeeper Batter", "Batting"),
-    ("Tushar Raheja", "India", "Wicketkeeper Batter", "Batting"),
-    ("Karan Lal", "India", "All-rounder", "All-rounder"),
+    ("Shahrukh Khan", "India", "Middle-order Batter / Finisher", "Batting"),
+    ("Nitish Rana", "India", "Top / Middle-order Batter", "Batting"),
     ("Shivalik Sharma", "India", "Middle-order Batter", "Batting"),
     ("Anmolpreet Singh", "India", "Top-order Batter", "Batting"),
     ("Nehal Wadhera", "India", "Middle-order Batter", "Batting"),
     ("Mitchell Owen", "Australia", "All-rounder", "All-rounder"),
-    ("Tanmay Agarwal", "India", "Top-order Batter", "Batting"),
+    ("Karun Nair", "India", "Top-order Batter", "Batting"),
     ("Ben Stokes", "England", "All-rounder", "All-rounder"),
     ("Sikandar Raza", "Zimbabwe", "All-rounder", "All-rounder"),
     ("Michael Bracewell", "New Zealand", "All-rounder", "All-rounder"),
@@ -171,9 +149,9 @@ players = [
     ("Deepak Chahar", "India", "Fast Bowler", "Bowling"),
     ("Trent Boult", "New Zealand", "Left-arm Fast Bowler", "Bowling"),
     ("Naman Tiwari", "India", "Left-arm Fast Bowler", "Bowling"),
-    ("Raj Limbani", "India", "Fast Bowler", "Bowling"),
+    ("Matheesha Pathirana", "Sri Lanka", "Fast Bowler", "Bowling"),
     ("Umran Malik", "India", "Fast Bowler", "Bowling"),
-    ("Ishant Bhardwaj", "India", "Bowler", "Bowling")
+    ("Avesh Khan", "India", "Fast Bowler", "Bowling")
 ]
 
 player_df = pd.DataFrame(
@@ -183,7 +161,7 @@ player_df = pd.DataFrame(
 
 
 # ==========================================================
-# CRICBUZZ PLAYER PROFILE INFORMATION
+# PLAYER PROFILE INFORMATION
 # ==========================================================
 
 research = {
@@ -208,19 +186,19 @@ research = {
         "Profile": "Wicketkeeper-batter",
         "Focus": "Wicketkeeping and top-order batting"
     },
-    "Tushar Raheja": {
-        "URL": "https://www.cricbuzz.com/profiles/13860/tushar-raheja",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Not listed",
-        "Profile": "Wicketkeeper-batter",
-        "Focus": "Wicketkeeping and batting contribution"
-    },
-    "Karan Lal": {
-        "URL": "https://www.cricbuzz.com/profiles/14708/karan-lal",
+    "Shahrukh Khan": {
+        "URL": "https://www.cricbuzz.com/profiles/10226/shahrukh-khan-c",
         "Batting Style": "Right-handed",
         "Bowling Style": "Right-arm offbreak",
-        "Profile": "Batter",
-        "Focus": "Batting and off-spin contribution"
+        "Profile": "Middle-order batter / Finisher",
+        "Focus": "Power hitting and finishing in the death overs"
+    },
+    "Nitish Rana": {
+        "URL": "https://www.cricbuzz.com/profiles/9204/nitish-rana-c",
+        "Batting Style": "Left-handed",
+        "Bowling Style": "Right-arm offbreak",
+        "Profile": "Top / Middle-order batter",
+        "Focus": "Middle-order stability, attacking batting and off-spin"
     },
     "Shivalik Sharma": {
         "URL": "https://www.cricbuzz.com/profiles/14408/shivalik-sharma",
@@ -250,12 +228,12 @@ research = {
         "Profile": "Batting all-rounder",
         "Focus": "Power hitting and medium-pace bowling"
     },
-    "Tanmay Agarwal": {
-        "URL": "https://www.cricbuzz.com/profiles/10258/tanmay-agarwal",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm legbreak",
-        "Profile": "Batter",
-        "Focus": "Top-order batting and innings building"
+    "Karun Nair": {
+        "URL": "https://www.cricbuzz.com/profiles/8257/karun-nair",
+        "Batting Style": "Right-handed",
+        "Bowling Style": "Right-arm offbreak",
+        "Profile": "Top-order batter",
+        "Focus": "Top-order stability, experience and innings construction"
     },
     "Ben Stokes": {
         "URL": "https://www.cricbuzz.com/profiles/6557/ben-stokes",
@@ -306,12 +284,12 @@ research = {
         "Profile": "Fast bowler",
         "Focus": "Left-arm pace and wicket-taking ability"
     },
-    "Raj Limbani": {
-        "URL": "https://www.cricbuzz.com/profiles/52488/raj-limbani",
-        "Batting Style": "Left-handed",
-        "Bowling Style": "Right-arm fast-medium",
-        "Profile": "Bowling all-rounder",
-        "Focus": "Seam bowling and lower-order batting"
+    "Matheesha Pathirana": {
+        "URL": "https://www.cricbuzz.com/profiles/16458/pathirana",
+        "Batting Style": "Right-handed",
+        "Bowling Style": "Right-arm fast",
+        "Profile": "Fast bowler",
+        "Focus": "Death-over bowling, yorkers and wicket-taking variations"
     },
     "Umran Malik": {
         "URL": "https://www.cricbuzz.com/profiles/19027/umran-malik",
@@ -320,12 +298,12 @@ research = {
         "Profile": "Fast bowler",
         "Focus": "Express pace and wicket-taking potential"
     },
-    "Ishant Bhardwaj": {
-        "URL": "https://www.cricbuzz.com/profiles/1466256/ishant-bhardwaj",
+    "Avesh Khan": {
+        "URL": "https://www.cricbuzz.com/profiles/9781/avesh-khan",
         "Batting Style": "Right-handed",
-        "Bowling Style": "Left-arm fast-medium",
-        "Profile": "Bowling all-rounder",
-        "Focus": "Left-arm pace and lower-order batting"
+        "Bowling Style": "Right-arm fast-medium",
+        "Profile": "Fast bowler",
+        "Focus": "Pace variations, middle overs and death-over bowling"
     }
 }
 
@@ -342,13 +320,10 @@ def find_dataset_files():
         "__pycache__", "node_modules"
     }
 
-    csv_files = []
-
-    for file in base.rglob("*.csv"):
-        if not any(part in ignored for part in file.parts):
-            csv_files.append(file)
-
-    return csv_files
+    return [
+        file for file in base.rglob("*.csv")
+        if not any(part in ignored for part in file.parts)
+    ]
 
 
 dataset_files = find_dataset_files()
@@ -566,7 +541,11 @@ if page == "Overview":
         """, unsafe_allow_html=True)
 
     st.markdown("### ADDITIONAL EVALUATION")
-    st.dataframe(general_parameters, use_container_width=True, hide_index=True)
+    st.dataframe(
+        general_parameters,
+        use_container_width=True,
+        hide_index=True
+    )
 
     st.markdown("### 📁 DATASET AVAILABILITY")
 
@@ -597,7 +576,11 @@ if page == "Overview":
             st.info(f"{category}: Not detected by filename")
 
     st.markdown("### PLAYER SHORTLIST")
-    st.dataframe(player_df, use_container_width=True, hide_index=True)
+    st.dataframe(
+        player_df,
+        use_container_width=True,
+        hide_index=True
+    )
 
 
 # ==========================================================
@@ -611,14 +594,20 @@ elif page == "Batting Analytics":
         unsafe_allow_html=True
     )
 
-    batters = player_df[player_df["Category"] == "Batting"]
+    batters = player_df[
+        player_df["Category"] == "Batting"
+    ]
 
     st.write(
         "Explore the shortlisted batting candidates and the parameters "
         "used to assess their T20 batting contribution."
     )
 
-    st.dataframe(batters, use_container_width=True, hide_index=True)
+    st.dataframe(
+        batters,
+        use_container_width=True,
+        hide_index=True
+    )
 
     st.markdown("### BATTER EVALUATION PARAMETERS")
     st.dataframe(
@@ -658,14 +647,20 @@ elif page == "Bowling Analytics":
         unsafe_allow_html=True
     )
 
-    bowlers = player_df[player_df["Category"] == "Bowling"]
+    bowlers = player_df[
+        player_df["Category"] == "Bowling"
+    ]
 
     st.write(
         "Explore the shortlisted bowling candidates and the parameters "
         "used to evaluate their T20 bowling contribution."
     )
 
-    st.dataframe(bowlers, use_container_width=True, hide_index=True)
+    st.dataframe(
+        bowlers,
+        use_container_width=True,
+        hide_index=True
+    )
 
     st.markdown("### BOWLER EVALUATION PARAMETERS")
     st.dataframe(
@@ -693,7 +688,7 @@ elif page == "Bowling Analytics":
 
 
 # ==========================================================
-# PLAYER PROFILES - CORRECTED DISPLAY
+# PLAYER PROFILES
 # ==========================================================
 
 elif page == "Player Profiles":
@@ -720,9 +715,6 @@ elif page == "Player Profiles":
 
     details = research[selected_player]
 
-    # Native Streamlit profile display.
-    # This avoids the profile information being rendered as code.
-
     st.markdown("---")
 
     st.markdown(
@@ -730,7 +722,9 @@ elif page == "Player Profiles":
         unsafe_allow_html=True
     )
 
-    st.caption(f"{player['Country']} | {player['Category']}")
+    st.caption(
+        f"{player['Country']} | {player['Category']}"
+    )
 
     st.markdown("### PLAYER INFORMATION")
 
@@ -757,10 +751,9 @@ elif page == "Player Profiles":
         st.write(details["Profile"])
 
     st.markdown("### SCOUTING FOCUS")
-
     st.info(details["Focus"])
 
-    st.markdown("### OFFICIAL PLAYER RESEARCH")
+    st.markdown("### PLAYER RESEARCH")
 
     st.link_button(
         "📖 OPEN CRICBUZZ PLAYER PROFILE",
@@ -818,8 +811,13 @@ elif page == "Player Comparison":
         st.warning("Please select two different players.")
 
     else:
-        p1 = player_df[player_df["Player"] == player1].iloc[0]
-        p2 = player_df[player_df["Player"] == player2].iloc[0]
+        p1 = player_df[
+            player_df["Player"] == player1
+        ].iloc[0]
+
+        p2 = player_df[
+            player_df["Player"] == player2
+        ].iloc[0]
 
         r1 = research[player1]
         r2 = research[player2]
